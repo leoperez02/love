@@ -67,7 +67,7 @@ void* multi(void* arg)
 }
 void* divi(void* arg)
 {
-	int res;
+	static int res;
 	res = num1 / num2;
 	/*return &res;*/
 	/* Rregeresar valor con */

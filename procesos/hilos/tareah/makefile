@@ -1,7 +1,7 @@
 #archivo makefile
 
 # Variables generales para el makefile
-PROYECTO=tarea_p
+PROYECTO=tareah
 DESTDIR=/usr/local/bin
 CFLAGS=-Wall -ansi -pedantic
 LDFLAGS=-lm -lpthread
