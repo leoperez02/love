@@ -1,25 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#define N 64
 
-typedef struct array array;
+typedef struct vector vector;
 
-/* Estructura para definir un arreglo de enteros y la longitud del arreglo */
-struct array
+/**
+ * Estructura para definir un arreglo de enteros y la longitud del 
+ * arreglo 
+ * */
+struct vector
 {
-	int* datos;
 	int size;
+	int* array;
 };
 
+vector* init_vector(int size);
 
+void llena_vector(vector* vec);
+void print_vector(vector* vec);
+void free_vector(vector* vec);
 
-array init_array(int);
-void llena_array(int*,int);
-void print_array(int*,int);
-
-void* get_mayor(void*);
-void* get_menor(void*);
-
-int get_promedio(int*,int);
-int* sort_array(int*,int);
+void* get_mayor(void* vec);
+void* get_menor(void* vec);
+void* get_promedio(void* vec);
+void* sort_vector(void* vec);

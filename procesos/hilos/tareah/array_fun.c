@@ -7,51 +7,50 @@
 #include "merge_sort.h"
 
 /*
-* init_array(): reserva memoria para la estructura array
+* init_vector(): reserva memoria para la estructura vector
 * 
 */
-
-array init_array(int n)
+vector* init_vector(int n)
 {
 	/* Reserva memoria para la estructura */
-	array* mem_array;
-	mem_array = (array*)malloc(sizeof(array));
-	if(!mem_array)
+	vector* ptr_vector;
+	ptr_vector = (vector*)malloc(sizeof(vector));
+	if(!ptr_vector)
     {
 		perror("Error al asignar memoria para la estructura\n");
 		exit(EXIT_FAILURE);
     }
     /* Asginando la longitud del arreglo */
-    (*mem_array).size = n;
+    (*ptr_vector).size = n;
     /* Reservado memoria para el arreglo */
-    (*mem_array).datos = (int*)malloc(sizeof(int)*N);
-    if(! (*mem_array).datos)
+    (*ptr_vector).array = (int*)malloc(sizeof(int)*n);
+    if(! (*ptr_vector).array)
     {
 		perror("Error al asignar memoria para el arreglo\n");
 		exit(EXIT_FAILURE);
     }
-	return *mem_array;
+	return ptr_vector;
 }
 
-void llena_array(int* array, int n)
+void llena_vector(vector* vec)
 {
 	register int i;
-	for(i = 0 ; i < n ; i++)
+	for(i = 0 ; i < (*vec).size ; i++)
 	{
-		array[i] = rand() % 4096 ;
+		(*vec).array[i] = rand() % 4096 ;
 	}
 }
 
-void print_array(int* array,int n)
+void print_vector(vector* vec)
 {
 	register int i;
-	for(i = 0 ; i < n ; i++)
+	for(i = 0 ; i < (*vec).size ; i++)
 	{
 		if (i % 16 == 0)
 		{
 			printf("\n");
 		}
-		printf("%4d ",array[i]);
+		printf("%4d ",(*vec).array[i]);
 	}
 	printf("\n");
 }
@@ -60,14 +59,14 @@ void* get_mayor(void* arg)
 {
 	register int i;
 	static int mayor;
-	int* datos;
-	datos = (int*)arg;
-	mayor = datos[0];
-	for(i = 1 ; i < N ; i++)
+	vector* vec;
+	vec = (vector*) arg;
+	mayor = (*vec).array[0];
+	for(i = 1 ; i < (*vec).size ; i++)
 	{
-		if(datos[i] > mayor)
+		if((*vec).array[i] > mayor)
 		{
-			mayor = datos[i];
+			mayor = (*vec).array[i];
 		}
 	}
 	pthread_exit( (void*) &mayor);
@@ -77,33 +76,57 @@ void* get_menor(void* arg)
 {
 	register int i;
 	static int menor;
-	int* datos;
-	datos = (int*) arg;
-	menor = datos[0];
-	for(i = 1 ; i < N ; i++)
+	vector* vec;
+	vec = (vector*) arg;
+	menor = (*vec).array[0];
+	for(i = 1 ; i < (*vec).size ; i++)
 	{
-		if(datos[i] < menor)
+		if((*vec).array[i] < menor)
 		{
-			menor = datos[i];
+			menor = (*vec).array[i];
 		}
 	}
 	pthread_exit( (void*) &menor);
 }
 
-int get_promedio(int* datos,int n)
+/*
+ * 
+ * name: get_promedio
+ * @param arg
+ * @return void
+ * 
+ * La funcion obtiene el promedio del vector de datos enteros
+ * NOTA: el promedio se calcula usando un rigth shift de 6 bits
+ * 		por lo que solo funciona cuando el vector tiene 64 elementos
+ */
+void* get_promedio(void* arg)
 {
 	register int i;
-	int promedio;
+	static int promedio;
+	vector* vec;
+	vec = (vector*) arg;
 	promedio = 0;
-	for(i = 0 ; i < n ; i++)
+	for(i = 0 ; i < (*vec).size ; i++)
 	{
-		promedio += datos[i];
+		promedio += (*vec).array[i];
 	}
 	promedio=promedio>>6;
-	return promedio;
+	pthread_exit( (void*) &promedio);
 }
 
-int* sort_array(int* array,int n)
+void* sort_vector(void* arg)
 {
-	return merge_sort(array, n);
+	static vector* vec;
+	vec = (vector*) arg;
+	(*vec).array = merge_sort((*vec).array, (*vec).size);
+	pthread_exit( (void*) vec);
+}
+
+void free_vector(vector* vec)
+{	
+    /* Liberar memoria del arreglo */
+    free((*vec).array);
+    /* Liberar memoria de la estructura */
+	free(vec);
+	vec = NULL;
 }
