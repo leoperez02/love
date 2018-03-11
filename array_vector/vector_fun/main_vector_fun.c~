@@ -1,0 +1,64 @@
+/*
+ * main_vector_fun.c
+ * 
+ * Copyright 2018 Lain Iwakura <lain@pavilion>
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ * 
+ * 
+ */
+ 
+/**
+ * @file main_array_fun
+ * @brief Test de biblioteca libvector_fun.h
+ * Se prueban las funciones básicas para trabajar con la estructura vector
+ * 
+ **/ 
+#include "livector_fun.h"
+
+#define SIZE 32
+#define MAX_R 4096
+
+int main(void)
+{
+	int *array;
+	int mayor,menor,promedio;
+	
+	/* Inicialización de un arreglo */
+	array = init_array(SIZE);
+	
+	/* Llenado aleatorio de datos entre 0 y MAX */
+	llena_array(array, SIZE, MAX_R);
+	
+	/* Impresion del arreglo en una linea */
+	printf("Arreglo en una sola linea:\n");
+	printa(array, SIZE);
+	
+	/* Impresion del arreglo en bloques de n elementos */
+	printf("Arreglo en bloques de 8 elementos:");
+	print_array(array, SIZE, 8);
+	
+	/* Test de funciones para hallar el mayor y menor del arreglo */
+	mayor = get_mayor(array, SIZE);
+	menor = get_menor(array, SIZE);
+	promedio = get_promedio(array, SIZE);
+	
+	printf("Elemento MAYOR = %d\n",mayor);
+	printf("Elemento MENOR = %d\n",menor);
+	printf("PROMEDIO = %d\n",promedio);
+	
+	return 0;
+}
