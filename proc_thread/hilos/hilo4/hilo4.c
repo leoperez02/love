@@ -21,7 +21,8 @@ int main(void)
 {
 	register int nh;
 	int nhs[NUM_H];
-	int* hilo_res; /* La variable que regresa el hilo es apuntador doble */
+	/* La variable que regresa el hilo es apuntador doble */
+	int* hilo_res; 
 	/* aRREGLO DE identificadores de hilos */
 	pthread_t tids[NUM_H];
 	/* Contador compartido por los hilos */
@@ -81,46 +82,3 @@ void* funcion_hilo(void* arg)
 	pthread_exit( arg );
 }
 
-void* funcion2_hilo(void* arg)
-{
-	switch (*(int*)arg)
-	{
-		case MAYOR:
-		break;
-		case MENOR:
-		break;
-		case PROMEDIO:
-		break;
-		case ORDENA:
-		break;
-		default:
-		break;
-	}
-
-	/*
-	int* nh = (int*) malloc(sizeof(int));
-	*/
-	/* Variable para el contador manual */
-	register int i;
-
-	/*	*nh = *(int*) arg ;*/
-
-	/* Inicializar con la cuenta minima */
-	i = 0;
-
-	/* Inicio de la seccion critica */
-	pthread_mutex_lock( &bloqueo );
-
-	contador++ ;
-	printf("Hilo en ejecucion con contador en %d\n",contador);
-	/* La funcion sleep no es re-entrante, no soporta interrumpciones */
-	/* sleep(); */
-	/* Contador */
-	while( (--i) );
-
-	printf("Hilo finalizado con contador en %d\n",contador);
-	/* Fin de la seccion critica del hilo */
-	pthread_mutex_unlock( &bloqueo );
-
-	pthread_exit( arg );
-}
