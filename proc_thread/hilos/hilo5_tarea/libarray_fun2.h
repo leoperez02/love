@@ -27,6 +27,9 @@
  
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 typedef enum{ORDENA=0, PROMEDIO, MENOR, MAYOR}TAREAS;
 

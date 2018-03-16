@@ -42,6 +42,7 @@ int* init_array(int n)
 void llena_array(int* array, int n, int max_r)
 {
 	register int i;
+	srand(getpid());
 	for(i = 0 ; i < n ; i++)
 	{
 		array[i] = rand() % max_r ;
@@ -57,7 +58,7 @@ void print_array(int* array,int n, int row_size)
 		{
 			printf("\n");
 		}
-		printf("%6d ",array[i]);
+		printf("%6.d ",array[i]);
 	}
 	printf("\n");
 }
@@ -105,7 +106,7 @@ int get_menor(int* datos,int n)
 int get_promedio(int* datos,int n)
 {
 	register int i;
-	int promedio;
+	long promedio;
 	promedio = 0;
 	for(i = 0 ; i < n ; i++)
 	{

@@ -5,7 +5,7 @@
 #include "libmerge_sort.h"
 
 #define NUM_H 4
-#define N 64
+#define N 2048
 
 void* funcion_hilo(void* arg);
 
@@ -57,6 +57,7 @@ int main(void)
 	printf("El PROMEDIO es %d\n",promedio);
 	printf("Arreglo ordenado:");
 	print_array(datos_ordenados,  N, 8);
+	printf("El PROMEDIO ordenado es %d\n",get_promedio(datos_ordenados,N));
 
 	/* Librear memoria del mutex*/
 	pthread_mutex_destroy( &bloqueo );
@@ -102,7 +103,9 @@ void* funcion_hilo(void* arg)
 		break;
 		
 		case ORDENA:
+			/*pthread_mutex_lock( &bloqueo );*/
 			datos_ordenados = merge_sort(datos,N);
+			/*pthread_mutex_unlock( &bloqueo );*/
 		break;
 		
 		default:
