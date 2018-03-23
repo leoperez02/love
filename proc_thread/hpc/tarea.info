@@ -4,3 +4,45 @@ Calcular producto punto por procesos y por hilos
 
 N = 64
 
+/*
+ aregealo A hamming coseno
+ arreglo b señal senoidal
+ eliminacion de fenomeno gibs
+ 
+ -> generar ventana hamming
+ 
+ guardar los valores de ventana haming, señal senoidal y resultado en distintos archivos
+ -> graficar con gnuplot
+ v1 - hilos
+ v2 - proceso
+ 
+ 512 muestras 
+ * 
+ * guardar todo en 3 archivos: señal denoidal ventana hamming y resutlado
+ * 
+ * declarar variables globales en main y usar en otros modulos con extern
+ 
+*/
+
+
+/*
+void* funcion_hilo(void* arg)
+{
+   int nn, i,ini_bloque, tan_bloque,fin_bloque;
+   
+   nn = *(int*)arg;
+   tan_bloque = N / NUM_H;
+   ini_bloque = nn * tan_bloque;
+   fin_bloque = ini_bloque + tan_bloque ;
+ 
+   for(i = ini_bloque ; i < fin_bloque ; i++)
+   {
+      (*C).array[i] = (*A).array[i] * (*B).array[i] ;
+   }
+ # link/ether d8:cb:8a:d5:7f:82 brd ff:ff:ff:ff:ff:ff
+    inet 8.110.0.208/24 brd 8.110.0.255 scope glo
+   
+	pthread_exit( arg );
+}
+*/
+
