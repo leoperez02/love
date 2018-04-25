@@ -11,7 +11,7 @@ pthread_mutex_t bloqueo;
 
 int dot_prod(vector *A_aux, vector *B_aux)
 {
-   /* Declaraciones */
+   	/* Declaraciones */
 	register int nh;
 	int nhs[NUM_H];
 	/* La variable que regresa el hilo es apuntador doble */
