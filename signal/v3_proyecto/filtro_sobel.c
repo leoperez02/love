@@ -1,10 +1,28 @@
-#include "imagen_fun.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <math.h>
+#include "imagen.h"
+#include "img_fun.h"
 
-void get_bordes (char *fileO, char *fileD)
+#define DIMASK 3
+#define NUM_H 4
+
+void *filtroPB(void *arg);
+
+/**
+ * variables globales
+ */ 
+unsigned char *imagenO;
+unsigned char *imagenP;
+uint32_t width;
+uint32_t heigth;
+
+int main(void)
 {
 	bmpInfoHeader info;
 	unsigned char *imagenRGB,*imagenGray,*imagenAux;
-	imagenRGB = abrirBMP(fileO,&info);
+	imagenRGB = abrirBMP("calle1.bmp",&info);
 	displayInfo(&info);
     imagenGray = RGBToGray(imagenRGB,info.width,info.height);
 
@@ -14,6 +32,7 @@ void get_bordes (char *fileO, char *fileD)
 	imagenP = imagenAux;
 	width = info.width;
 	heigth = info.height;
+	
 	
 	/**
 	 * Inicio de la sección del procesamiento en paralelo
@@ -47,15 +66,16 @@ void get_bordes (char *fileO, char *fileD)
 	/**
 	 * FIN de la sección del procesamiento en paralelo
 	 */
-	 
+ 
 	//brilloImagen(imagenAux,info.width,info.height);
 	GrayToRGB(imagenRGB,imagenAux,info.width,info.height);
-    guardarBMP(fileD,&info,imagenRGB);
+    	guardarBMP("calle1_bordes.bmp",&info,imagenRGB);
 
 	free(imagenRGB);
-    free(imagenGray);
+	free(imagenGray);
 	free(imagenP);
-	
+
+	return 0;
 }
 
 void* filtroPB(void *arg)
@@ -64,6 +84,7 @@ void* filtroPB(void *arg)
 	 * Definir bloques horizontales segun el numero de hilo 
 	 */
 	int nn,inicioB,finB;
+	int gx,gy,modulo;
 	nn = *(int*)arg;
 	switch (nn)
 	{
@@ -94,40 +115,39 @@ void* filtroPB(void *arg)
 	}	
 	
 	register int x,y,ym,xm;
-	register int GX , GY, modulo;
-	int conv,indiceI,indiceM;
-	char maskx[DIMASK*DIMASK] = {
-		-1, 0,  1,
-		-2, 0,  2,
-		-1, 0,  1 };
-		
-	char masky[DIMASK*DIMASK] = {
-		-1, -2, -1,
-		 0,  0,  0,
-		 1,  2,  1 };
+	int indiceI,indiceM;
+
+	short mask_x[DIMASK*DIMASK] = {
+		-1,0,1,
+		-2,0,2,
+		-1,0,1};
+
+	short mask_y[DIMASK*DIMASK] = {
+		-1,-2,-1,
+		-0,0,0,
+		1,2,1};
+
     for(y = inicioB ; y < finB ; y++)
     {
 		for(x = 0 ; x < width-DIMASK ; x++)
 		{ // para movernos por toda la imagen
-            
-            modulo = 0;
-			GX = 0;
-			GY = 0;
-			
+        //conv = 0 ;
+				gx = 0 ;
+				gy = 0 ;
+
 		    for(ym = y ; ym < y+DIMASK ;ym++)
 		    {
 				for(xm = x ; xm < x+DIMASK; xm++)
 				{
 					indiceI = ym * width + xm;
 					indiceM = (ym-y)* DIMASK+ (xm-x);
-//					conv += (imagenO[indiceI] * mascara[indiceM]) ;
-					GX += (imagenO[indiceI] * maskx[indiceM]) >>2 ;
-					GY += (imagenO[indiceI] * masky[indiceM]) >>2 ;
-			    }
-				//conv /= 9;
+					gx += (imagenO[indiceI] * mask_x[indiceM]) ;
+					gy += (imagenO[indiceI] * mask_y[indiceM]) ;
+			  }
+			  //conv /= 9;
+			  modulo = sqrt(gx*gx + gy*gy);
 				indiceI = (y+1) * width + (x+1) ;
-				modulo = sqrt(GX*GX+GY*GY);
-				imagenP[indiceI] = (modulo > 255 ) ? 255 : modulo;
+			  imagenP[indiceI] = (modulo > 255 ) ? 255 : modulo;
 		    }	
 		}
 	}

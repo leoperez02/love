@@ -1,7 +1,7 @@
 #archivo makefile
 
 # Variables generales para el makefile
-PROYECTO=mainp
+PROYECTO=filtro_sobel
 DESTDIR=/usr/local/bin
 CFLAGS=-Wall -pedantic 
 LDFLAGS=-lm -lpthread 
