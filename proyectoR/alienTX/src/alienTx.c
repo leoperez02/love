@@ -39,7 +39,7 @@ unsigned char buffer[MTU];
 void transfer_file(char *src_file, char *ip_address, char *dest_path)
 {	
 	FILE *file;
-	int bytes, bytes_writed, bytes_readed;
+	int bytes, bytes_writed, bytes_readed, NUM_BYTES;
 	char *file_name, *transfer_path;
 	/**
 	 * Crear un socket y conectarse al servidor
@@ -55,7 +55,8 @@ void transfer_file(char *src_file, char *ip_address, char *dest_path)
 	 * Enviar archivo
 	 * 
 	 * 1. Enviar ruta destino y nombre del archivo destino
-	 * 2. Enviar contenido del archivo
+	 * 2. Enviar numero de bytes del archivo
+	 * 3. Enviar contenido del archivo
 	 * */
 	
 	/**
@@ -101,7 +102,22 @@ void transfer_file(char *src_file, char *ip_address, char *dest_path)
 	//se omite comprobacion buffer == transfer_path
 	
 	/**
-	 * 2. Enviar bytes del archivo
+	 * 2. Enviar numero de bytes del archivo
+	 * */
+	char *command1 = "ls -l ";
+	char *command2 = " | cut -d ' ' -f 5 > tam.tmp" ;
+	char *c1 = get_path_file(command1,src_file);
+	char *c2 = get_path_file(c1,command2);
+	system(c2);
+	file = fopen("tam.tmp","r");
+	fgets(buffer,16,file);
+	bytes_writed = send_data(buffer);
+	fclose(file);
+	NUM_BYTES = atoi(buffer);
+	system("rm tam.tmp");
+	
+	/**
+	 * 3. Enviar bytes del archivo
 	 * */
 	/**
 	 * Abrir archivo a transferir en modo binario de lectura
@@ -175,13 +191,43 @@ void transfer_file(char *src_file, char *ip_address, char *dest_path)
 	/*
 	 * Recibir el contenido del archivo procesado
 	 * */
+	/**
+	 * Recibir bytes ...
+	 * */
+	printf("Recibiendo archivo ...\n");
 	
+	bytes=0;
+	bytes_readed = 0;
+	bytes_writed = 0 ;
 	
+	do
+	{	
+		bytes_readed = read (sockfd, &buffer, MTU); 
+		if( bytes_readed < 0 )
+		{
+			perror ("Ocurrio algun problema al recibir datos del cliente");
+			exit(1);
+		}
+		bytes_writed = fwrite(&buffer, sizeof(unsigned char), bytes_readed, file);
+		if( bytes_writed < 0 )
+		{
+			perror("Error al leer el stream de datos\n");
+		}
+		bytes+=bytes_readed;
+		printf("Recibidos %d bytes del archivo\n",bytes);
+		gotoxy(1,10);
+		
+	}
+	while( bytes < NUM_BYTES);
 	
+	//	Cerrar descriptor de archivo
+	fclose(file);
 	
-	printf ("Cerrando la aplicacion cliente\n");
+	gotoxy(1,11);
+	printf("Archivo recibido y guardado!\n");
 	/*
 	*	Cierre de la conexion
 	*/
+	printf ("Cerrando la aplicacion cliente\n");
 	close(sockfd);
 }
