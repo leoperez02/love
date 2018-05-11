@@ -71,7 +71,7 @@ void start_server(void)
 	 *  bind - Se utiliza para unir un socket con una dirección de red
 	 *  determinada
 	 */
-	printf("Configurando socket ...\n");
+	//printf("Configurando socket ...\n");
 	if( bind(sockfd, (struct sockaddr *) &direccion_servidor, sizeof(direccion_servidor)) < 0 )
 	{
 		perror ("Ocurrio un problema al configurar el socket");
@@ -84,7 +84,7 @@ void start_server(void)
 	 *  Habilita una cola asociada la socket para alojar peticiones de 
 	 * 	conector procedentes de los procesos clientes
 	 */
-	printf ("Estableciendo la aceptacion de clientes...\n");
+	//printf ("Estableciendo la aceptacion de clientes...\n");
 	if( listen(sockfd, COLA_CLIENTES) < 0 )
 	{
 		perror("Ocurrio un problema al crear la cola de aceptar peticiones de los clientes");
@@ -114,7 +114,7 @@ void start_server(void)
 			printf("Se acepto un cliente, atendiendolo... \n");
 			read_client();
 		}
-		printf("Concluimos la ejecución de la aplicacion Servidor \n");
+		//printf("Concluimos la ejecución de la aplicacion Servidor \n");
 	}
 	/*
 	 *	Cierre de las conexiones
@@ -134,7 +134,8 @@ void read_client(void)
 	 * Recibir archivo
 	 * 
 	 * 1. Recibir ruta donde guardar el archivo con nombre
-	 * 2. Recibir contenido del archivo
+	 * 2. Recibir cantidad de bytes del archivo
+	 * 3. Recibir contenido del archivo
 	 * */
 	
 	/**
@@ -158,6 +159,13 @@ void read_client(void)
 		perror("No se escribio correctamente el nombre de archivo\n");
 		exit(1);
 	}
+	
+	/**
+	 * 2. Recibir el numero de bytes del archivo
+	 * */
+	bytes_readed = get_data();
+	char *num_bytes = get_mem(bytes_readed);
+	int NUM_BYTES = atoi(num_bytes);
 	
 	/**
 	 * 3. Recibiendo los bytes del archivo
@@ -199,14 +207,13 @@ void read_client(void)
 		}
 		bytes+=bytes_readed;
 		printf("Recibidos %d bytes del archivo\n",bytes);
-		gotoxy(1,12);
-		
+		gotoxy(1,9);
 	}
-	while( bytes < 2876854);
+	while( bytes < NUM_BYTES);
 	
 	//	Cerrar descriptor de archivo
 	fclose(file);
-	gotoxy(1,13);
+	gotoxy(1,10);
 	printf("Archivo recibido y guardado!\n");
 	
 	/**
@@ -234,7 +241,45 @@ void read_client(void)
 	 //printf("%d bytes enviados\n",bytes_writed);
 	 printf("Ruta transmitida!\n");
 	  
-	 // Enviar imagen
+	// Enviar imagen
+	/**
+	 * Abrir archivo a transferir en modo binario de lectura
+	 * */
+	file = fopen("build/img_proc.bmp","rb");
+	/**
+	 * Verificar que no hay error en la apertura
+	 * */
+	if(!file)
+	{
+		perror ("Ocurrio un problema al abrir el archivo\n");
+		exit(1);
+	}
+	/**
+	 * Transferir bytes ...
+	 * */
+	printf("Iniciando transferencia...\n");
+
+	bytes=0; // Contador de los bytes transferidos 
+	
+	// Leer MTU bytes del archivo en el buffer para transmitir
+	bytes_readed = fread(&buffer, sizeof(unsigned char), MTU, file);
+	while ( bytes_readed )
+	{
+		// Escribir en el socket los bytes leidos del buffer
+		bytes_writed = write(cliente_sockfd, &buffer, bytes_readed); 
+		if( bytes_writed < 0 )
+		{
+			perror("Ocurrio un problema en el envio del mensaje\n");
+			exit(1);
+		}
+		bytes+=bytes_writed; // Cuenta total de bytes transferidos
+		gotoxy(1,30);
+		printf("Enviados %d bytes del archivo\n",bytes);
+		bytes_readed = fread(&buffer, sizeof(unsigned char), MTU, file);
+	}
+	fclose(file);
+	
+	printf("\nArchivo enviado!\n");
 	 
 	/**
 	 * Para finalizar correctamente el proceso hijo, debe 
