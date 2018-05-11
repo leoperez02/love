@@ -140,7 +140,45 @@ void transfer_file(char *src_file, char *ip_address, char *dest_path)
 	}
 	fclose(file);
 	
-	printf ("\nArchivo enviado!\n");
+	printf("\nArchivo enviado!\n");
+	/**
+	 * El servidor procesa la imagen y envia el archivo procesado de 
+	 * regreso al cliente
+	 * 
+	 * 1. Recibir ruta destino
+	 * 2. Recibir imagen procesada
+	 * */
+	
+	/*
+	 * 1. Recibir la cadena de ruta y nombre
+	 * */
+	
+	printf("Esperando recibir ruta destino...\n"); 
+	bytes_readed = read(sockfd, &buffer, MTU);
+	//printf(" %d bytes leidos del stream\n",bytes_readed); 
+	file_name = get_mem(bytes_readed);
+	printf("Preparando destino %s de la imagen procesada...\n",file_name);
+	
+	/**
+	 * Creando archivo binario para escritura
+	 * */
+	file = fopen(file_name,"wb");
+	/**
+	 * Verificar que no hay error en la apertura
+	 * */
+	if( !file )
+	{
+		perror("Ocurrio un error al crear el archivo");
+		exit(EXIT_FAILURE);
+	}
+	
+	/*
+	 * Recibir el contenido del archivo procesado
+	 * */
+	
+	
+	
+	
 	printf ("Cerrando la aplicacion cliente\n");
 	/*
 	*	Cierre de la conexion
