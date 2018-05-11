@@ -78,6 +78,18 @@ char *get_file_name(char *file_name)
 	return file_name;
 }	
 
+char *get_mem(int bytes_readed)
+{
+	register int i ;
+	char* cadena;
+	cadena = (char*) malloc(sizeof(unsigned char)*bytes_readed); 
+	for( i = 0 ; i < bytes_readed ; i++)
+	{
+		cadena[i] = buffer[i];
+	}
+	return cadena;
+}
+
 void get_menu(void)
 {
 	printf(" * Sintaxis del programa\n"					);

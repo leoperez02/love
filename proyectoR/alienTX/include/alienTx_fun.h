@@ -32,6 +32,7 @@
 
 int get_data(void);
 char *get_file_name(char *file_name);
+char *get_mem(int bytes_readed);
 void get_menu(void);
 char *get_path_file(char *ruta_destino, char *file_name);
 void gotoxy(int x, int y);
