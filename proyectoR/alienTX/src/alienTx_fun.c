@@ -107,16 +107,20 @@ char *get_path_file(char *ruta_destino, char *file_name)
 	int len;
 	register int i, j ;
 	len = strlen(ruta_destino) + strlen(file_name);
-	//printf("len = %d",len);
-	path = (char*) malloc(sizeof(char)*len );
+	//printf("len = %d\n",len);
+	path = (char*) malloc(sizeof(char)*len +1);
 	for( i = 0 ; i < strlen(ruta_destino) ; i++)
 	{
 		path[i] = ruta_destino[i];
+		//printf("%c=%d\n",path[i]);
 	}
-	for(j = 0 ; j < strlen(file_name) ; i++, j++)
+	//printf("second\n");
+	for(j = 0 ; i < len ; i++, j++)
 	{
 		path[i] = file_name[j];
+		//printf("%c=%d\n",path[i]);
 	}
+	path[len] = '\0';
 	return path;
 }
 

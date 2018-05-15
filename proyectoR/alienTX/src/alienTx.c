@@ -86,7 +86,17 @@ void transfer_file(char *src_file, char *ip_address, char *dest_path)
 	{
 		// Se obtiene el nombre original del archivo sin ruta
 		file_name = get_file_name(src_file); 
+		//printf("Nombre de archivo: %s\n",file_name);
+		/*
+		for(int i = 0 ; i<strlen(file_name)+1 ; i++)
+			printf("%c=%d\n",file_name[i],file_name[i]);
+		printf("concat\n");
+		*/
 		transfer_path = get_path_file("./", file_name);
+		/*
+		for(int i = 0 ; i<strlen(transfer_path)+1 ; i++)
+			printf("%c=%d\n",transfer_path[i],transfer_path[i]);
+		*/
 	}
 	printf("Transferencia al destino: %s\n",transfer_path);
 	bytes_writed = send_data(transfer_path);
