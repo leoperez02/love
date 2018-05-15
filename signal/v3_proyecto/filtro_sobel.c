@@ -124,7 +124,7 @@ void* filtroPB(void *arg)
 
 	short mask_y[DIMASK*DIMASK] = {
 		-1,-2,-1,
-		-0,0,0,
+		0,0,0,
 		1,2,1};
 
     for(y = inicioB ; y < finB ; y++)
@@ -141,8 +141,8 @@ void* filtroPB(void *arg)
 				{
 					indiceI = ym * width + xm;
 					indiceM = (ym-y)* DIMASK+ (xm-x);
-					gx += (imagenO[indiceI] * mask_x[indiceM]) ;
-					gy += (imagenO[indiceI] * mask_y[indiceM]) ;
+					gx += (imagenO[indiceI] * mask_x[indiceM])>>2 ;
+					gy += (imagenO[indiceI] * mask_y[indiceM])>>2 ;
 			  }
 			  //conv /= 9;
 			  modulo = sqrt(gx*gx + gy*gy);

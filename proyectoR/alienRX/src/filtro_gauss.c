@@ -96,12 +96,12 @@ void* filtroPB(void *arg)
 	register int x,y,ym,xm;
 	register int GX , GY, modulo;
 	int conv,indiceI,indiceM;
-	char maskx[DIMASK*DIMASK] = {
+	short maskx[DIMASK*DIMASK] = {
 		-1, 0,  1,
 		-2, 0,  2,
 		-1, 0,  1 };
 		
-	char masky[DIMASK*DIMASK] = {
+	short masky[DIMASK*DIMASK] = {
 		-1, -2, -1,
 		 0,  0,  0,
 		 1,  2,  1 };

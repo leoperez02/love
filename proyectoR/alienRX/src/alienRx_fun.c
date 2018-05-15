@@ -43,11 +43,12 @@ char *get_mem(int bytes_readed)
 {
 	register int i ;
 	char* cadena;
-	cadena = (char*) malloc(sizeof(unsigned char)*bytes_readed); 
+	cadena = (char*) malloc(sizeof( char)*bytes_readed+1); 
 	for( i = 0 ; i < bytes_readed ; i++)
 	{
 		cadena[i] = buffer[i];
 	}
+	cadena[bytes_readed] = '\0';
 	return cadena;
 }
 
@@ -67,6 +68,7 @@ char *get_path_file(char *ruta_destino, char *file_name)
 	{
 		path[i] = file_name[j];
 	}
+	path[len] = '\0';
 	return path;
 }
 
