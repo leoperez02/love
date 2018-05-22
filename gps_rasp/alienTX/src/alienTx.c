@@ -104,17 +104,16 @@ void transfer_file(char *src_file, char *ip_address, char *dest_path)
 	* Esperar respuesta del servidor, regresa la ruta de destino 
 	* */
 	bytes_readed = get_data();
-	/*
-	if( bytes_readed != bytes_writed )
-	{
-		perror("Fallo la transmision de la ruta de destino\n");
-		exit(1);
-	}
-	* 
-	* */
-	printf(" %d bytes leidos del stream\n",bytes_readed); 
+	//printf("%d bytes leidos del stream\n",bytes_readed); 
 	file_name = get_mem(bytes_readed);
-	printf("Respueesta del servidor: %s\n",file_name);
+	printf("Respuesta del servidor: \n%s",file_name);
+	
+	bytes_readed = get_data();
+	//printf("%d bytes leidos del stream\n",bytes_readed); 
+	file_name = get_mem(bytes_readed);
+	//printf("Respuesta del servidor: \n%s",file_name);
+	printf("%s",file_name);
+	
 	//se omite comprobacion buffer == transfer_path
 	
 	///**

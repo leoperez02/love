@@ -53,6 +53,10 @@ char *gsa_string;
 char *gsv_string;
 char *gll_string;
 
+char tiempo[10];
+char latitud[9];
+char longitud[10];
+
 /* Objeto mutex para definir seccion critica en hilos */
 pthread_mutex_t bloqueo;
 
@@ -133,28 +137,34 @@ void read_client(void)
 		 * GGA
 		 * */
 		case 'C':
+			proceso(rmc_string);
 			path_file = rmc_string;
 		break;
 		
 		case 'G':
+			proceso(vtg_string);
 			path_file = vtg_string;
 		break;
 		
 		case 'V':
+			proceso(gsv_string);
 			path_file = gsv_string;
 		break;
 		
 		case 'L':
+			proceso(gll_string);
 			path_file = gll_string;
 		break;
 		
 		case 'A': // peude ser GSA o GGA
 			if( path_file[1] == 'S')
 			{
+				proceso(gsa_string);
 				path_file = gsa_string;
 			}
 			else
 			{
+				proceso(gga_string);
 				path_file = gga_string;
 			}
 		break;
@@ -163,11 +173,23 @@ void read_client(void)
 			path_file = "ERROR 404";
 		break;
 	}
+	
+	printf("Latitud: %s\n",latitud);
+    printf("Tiempo: %s\n",tiempo);
+    printf("Longitud: %s\n",longitud);
+	
 	 
 	/**
 	 * Enviar de vuelta la info
 	 * */
-	bytes_writed = write (cliente_sockfd, path_file, strlen(path_file)); 
+	//bytes_writed = write (cliente_sockfd, path_file, strlen(path_file)); 
+	bytes_writed = write (cliente_sockfd, "Latitud: ", 9);
+	bytes_writed = write (cliente_sockfd, latitud, strlen(latitud)); 
+	bytes_writed = write (cliente_sockfd, "\nTiempo: ", 8);
+	bytes_writed = write (cliente_sockfd, tiempo, strlen(tiempo)); 
+	bytes_writed = write (cliente_sockfd, "\nLongitud: ", 10);
+	bytes_writed = write (cliente_sockfd, longitud, strlen(longitud));
+	bytes_writed = write (cliente_sockfd, "\n", 1); 
 	/*
 	if ( bytes_writed != strlen(path_file))
 	{

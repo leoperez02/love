@@ -6,6 +6,8 @@
 #include <termios.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <string.h>
 
 
 int config_serial ( char *, speed_t );
+void proceso(char *cadena);
