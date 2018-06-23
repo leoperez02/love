@@ -278,7 +278,7 @@ void read_client(void)
 	syslog(LOG_INFO,"Enviados %d bytes del archivo\n",bytes);
 	fclose(file);
 	
-	syslog(LOG_INFO,"\nArchivo enviado!\n");
+	syslog(LOG_INFO,"Archivo enviado!\n");
 	 
 	/**
 	 * Para finalizar correctamente el proceso hijo, debe 
