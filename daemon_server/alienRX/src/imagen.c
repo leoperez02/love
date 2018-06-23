@@ -88,7 +88,7 @@ void guardarBMP( char *filename, bmpInfoHeader *info, unsigned char *imgdata )
   	FILE *f;
   	uint16_t type;
 
-  	f = fopen(filename, "w+");
+  	f = fopen(filename, "w");
 	if( f  == NULL )
 	{
 		syslog(LOG_ERR,"Error al abrir el archivo en escritura");
