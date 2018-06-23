@@ -1,32 +1,52 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <string.h>
-#include <signal.h>
-#include <syslog.h>
+/*
+ * alien_server.c
+ * 
+ * Copyright 2018 Leo <leo@Inspiron3437>
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ * 
+ * 
+ */
 
-#define MAX		100
+#include "alienRx_fun.h"
 
-int main(int argc, char *argv[])
+void init_daemon(void);
+
+int main(void)
+{
+	system(CLEAR_SCREEN);
+	init_daemon();
+	syslog(LOG_INFO,"Proceso daemonizado exitosamente! Iniciando servidor...");
+	start_server();
+	return 0;
+}
+
+void init_daemon(void)
 {
 	FILE *apArch;
 
     pid_t pid = 0;
     pid_t sid = 0;
     int cont = 0;
-    /**
-     * Test for capturing keyboard
-     * */
-     char c;
-     c = getchar();
-     printf("Key = %c", c);
+    
 // Se crea el proceso hijo
     pid = fork();
     if( pid == -1 )
     {
-		perror("Error al crear el primer proceso hijo\n");
+		syslog(LOG_ERR,"Error al crear el primer proceso hijo\n");
 		exit(EXIT_FAILURE);
     }
 /*
@@ -37,7 +57,7 @@ int main(int argc, char *argv[])
  */
     if( pid )
     {
-		printf("Se termina proceso padre, PID del proceso hijo %d \n", pid);
+		syslog(LOG_DEBUG,"Se termina proceso padre, PID del proceso hijo %d \n", pid);
 		exit(0);
     }
 /* Se restablece el modo de archivo
@@ -62,23 +82,22 @@ int main(int argc, char *argv[])
     sid = setsid();
     if( sid < 0 )
     {
-		perror("Error al iniciar sesion");
+		syslog(LOG_ERR,"Error al iniciar sesion");
 		exit(EXIT_FAILURE);
     }
 // Se realiza un segundo fork para separarnos completamente de la sesion del padre
     pid = fork( );
     if( pid == -1 )
     {
-		perror("Error al crear el segundo proceso hijo\n");
+		syslog(LOG_ERR,"Error al crear el segundo proceso hijo\n");
 		exit(EXIT_FAILURE);
     }
     if( pid )
     {
-		printf("PID del segundo proceso hijo %d \n", pid);
-		apArch = fopen("/home/lain/demonio.pid", "w");
+		syslog(LOG_DEBUG,"PID del segundo proceso hijo %d \n", pid);
+		apArch = fopen(PATH_DEMON_PID, "w");
 		fprintf(apArch, "%d", pid);
 		fclose(apArch);
-
 		exit(0);
     }
 /* 
@@ -99,29 +118,7 @@ int main(int argc, char *argv[])
  * para registrar estos eventos. En lo sistemas basados en UNIX este servicio lo ofrece el demonio Syslog, 
  * al que otros procesos pueden enviar mensajes a través de la función syslog()
  */
-    //close( STDIN_FILENO  );
+    close( STDIN_FILENO  );
     close( STDOUT_FILENO );
     close( STDERR_FILENO );
-// Se abre un archivo log en modo de escritura.
-    openlog( "demonio", LOG_NDELAY | LOG_PID, LOG_LOCAL0 );
-
-	//c = 0 ;
-    for( cont = 0; 1 ; cont++ ) 
-    {
-//Evaluar caracter para determinar si es nuevo o no
-		
-			c = getchar();
-			syslog(syslog(LOG_INFO,, "Demonio inicializado %d: key = %d = %c", cont,c,c );
-			ungetc(c,stdin) ;
-			//esperar hasta que se presione otra tecla
-			sleep( 10);
-
-	
-		
-    }
-    closelog( );
-
-    return 0;
 }
-
-
