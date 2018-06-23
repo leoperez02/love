@@ -223,7 +223,7 @@ void read_client(void)
 	 * imagen a procesaar y el nombre del archivo nuevo a generar
 	 * */
 	syslog(LOG_INFO,"Procesando imagen ... \n");
-	get_bordes(path_file,"build/img_proc.bmp");
+	get_bordes(path_file,"./img_proc.bmp");
 	syslog(LOG_INFO,"Imagen lista!. Enviando de vuelta ... \n");
 	
 	/**
@@ -245,7 +245,7 @@ void read_client(void)
 	/**
 	 * Abrir archivo a transferir en modo binario de lectura
 	 * */
-	file = fopen("build/img_proc.bmp","rb");
+	file = fopen("./img_proc.bmp","rb");
 	/**
 	 * Verificar que no hay error en la apertura
 	 * */
