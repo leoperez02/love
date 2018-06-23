@@ -206,11 +206,10 @@ void read_client(void)
 			syslog(LOG_ERR,"Error al leer el stream de datos\n");
 		}
 		bytes+=bytes_readed;
-		syslog(LOG_INFO,"Recibidos %d bytes del archivo\n",bytes);
 		//gotoxy(1,9);
 	}
 	while( bytes < NUM_BYTES);
-	
+	syslog(LOG_INFO,"Recibidos %d bytes del archivo\n",bytes);
 	//	Cerrar descriptor de archivo
 	fclose(file);
 	//gotoxy(1,10);
@@ -274,9 +273,9 @@ void read_client(void)
 		}
 		bytes+=bytes_writed; // Cuenta total de bytes transferidos
 		//gotoxy(1,30);
-		syslog(LOG_INFO,"Enviados %d bytes del archivo\n",bytes);
 		bytes_readed = fread(&buffer, sizeof(unsigned char), MTU, file);
 	}
+	syslog(LOG_INFO,"Enviados %d bytes del archivo\n",bytes);
 	fclose(file);
 	
 	syslog(LOG_INFO,"\nArchivo enviado!\n");
